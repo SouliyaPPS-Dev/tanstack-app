@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
 import { createFileRoute } from '@tanstack/react-router';
-import { useLiveQuery } from '@tanstack/react-db';
 import { ListChecks, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 import {
   inventoryCollection,
