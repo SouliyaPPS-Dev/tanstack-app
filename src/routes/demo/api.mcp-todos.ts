@@ -12,7 +12,7 @@ export const Route = createFileRoute('/demo/api/mcp-todos')({
               try {
                 controller.enqueue(`event: ping\n\n`)
                 setTimeout(ping, 1000)
-              } catch {}
+              } catch { }
             }
             ping()
             const unsubscribe = subscribeToTodos((todos) => {
