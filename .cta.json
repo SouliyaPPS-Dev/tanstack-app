@@ -7,8 +7,8 @@
   "git": true,
   "install": true,
   "addOnOptions": {},
-  "version": 1,
   "addOns": true,
+  "version": 1,
   "framework": "react-cra",
   "chosenAddOns": [
     "start",
@@ -17,6 +17,10 @@
     "db",
     "form",
     "table",
-    "store"
+    "store",
+    "compiler",
+    "shadcn",
+    "t3env",
+    "mcp"
   ]
 }
