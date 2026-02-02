@@ -6,6 +6,7 @@ import { geminiText } from '@tanstack/ai-gemini'
 import { ollamaText } from '@tanstack/ai-ollama'
 
 import { getGuitars, recommendGuitarToolDef } from '@/lib/demo-guitar-tools'
+import { env } from '@/env'
 
 const SYSTEM_PROMPT = `You are a helpful assistant for a store that sells guitars.
 
@@ -47,13 +48,13 @@ export const Route = createFileRoute('/demo/api/ai/chat')({
           // Determine the best available provider
           let provider: Provider = 'ollama'
           let model: string = 'mistral:7b'
-          if (process.env.ANTHROPIC_API_KEY) {
+          if (env.ANTHROPIC_API_KEY) {
             provider = 'anthropic'
             model = 'claude-haiku-4-5'
-          } else if (process.env.OPENAI_API_KEY) {
+          } else if (env.OPENAI_API_KEY) {
             provider = 'openai'
             model = 'gpt-4o'
-          } else if (process.env.GEMINI_API_KEY) {
+          } else if (env.GEMINI_API_KEY) {
             provider = 'gemini'
             model = 'gemini-2.0-flash-exp'
           }

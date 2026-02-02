@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { generateImage, createImageOptions } from '@tanstack/ai'
 import { openaiImage } from '@tanstack/ai-openai'
 
+import { env } from '@/env'
+
 export const Route = createFileRoute('/demo/api/ai/image')({
   server: {
     handlers: {
@@ -21,7 +23,7 @@ export const Route = createFileRoute('/demo/api/ai/image')({
           )
         }
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!env.OPENAI_API_KEY) {
           return new Response(
             JSON.stringify({
               error: 'OPENAI_API_KEY is not configured',

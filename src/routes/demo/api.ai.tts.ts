@@ -2,6 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { generateSpeech } from '@tanstack/ai'
 import { openaiSpeech } from '@tanstack/ai-openai'
 
+import { env } from '@/env'
+
 export const Route = createFileRoute('/demo/api/ai/tts')({
   server: {
     handlers: {
@@ -27,7 +29,7 @@ export const Route = createFileRoute('/demo/api/ai/tts')({
           )
         }
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!env.OPENAI_API_KEY) {
           return new Response(
             JSON.stringify({
               error: 'OPENAI_API_KEY is not configured',
