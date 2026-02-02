@@ -171,7 +171,7 @@ function ChatPage() {
     useAudioRecorder()
   const { playingId, speak, stop: stopTTS } = useTTS()
 
-  const { messages, sendMessage, isLoading, stop } =
+  const { messages, sendMessage, isLoading, stop, error } =
     useGuitarRecommendationChat()
 
   const handleMicClick = async () => {
@@ -201,6 +201,14 @@ function ChatPage() {
 
         <Layout>
           <div className="space-y-3">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm flex items-center justify-between">
+                <span>
+                  <strong className="font-semibold">Error:</strong>{' '}
+                  {error.message || 'An unexpected error occurred'}
+                </span>
+              </div>
+            )}
             {isLoading && (
               <div className="flex items-center justify-center">
                 <button

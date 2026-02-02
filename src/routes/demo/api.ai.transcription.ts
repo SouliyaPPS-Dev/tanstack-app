@@ -3,6 +3,7 @@ import { generateTranscription } from '@tanstack/ai'
 import { openaiTranscription } from '@tanstack/ai-openai'
 
 import { env } from '@/env'
+import { logApiError } from '@/utils/server-logger'
 
 export const Route = createFileRoute('/demo/api/ai/transcription')({
   server: {
@@ -75,6 +76,11 @@ export const Route = createFileRoute('/demo/api/ai/transcription')({
             },
           )
         } catch (error: any) {
+          logApiError('POST /demo/api/ai/transcription', error, {
+            model,
+            language,
+            responseFormat,
+          })
           return new Response(
             JSON.stringify({
               error: error.message || 'An error occurred',

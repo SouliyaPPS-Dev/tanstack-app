@@ -3,6 +3,7 @@ import { generateImage, createImageOptions } from '@tanstack/ai'
 import { openaiImage } from '@tanstack/ai-openai'
 
 import { env } from '@/env'
+import { logApiError } from '@/utils/server-logger'
 
 export const Route = createFileRoute('/demo/api/ai/image')({
   server: {
@@ -56,6 +57,10 @@ export const Route = createFileRoute('/demo/api/ai/image')({
             },
           )
         } catch (error: any) {
+          logApiError('POST /demo/api/ai/image', error, {
+            size,
+            numberOfImages,
+          })
           return new Response(
             JSON.stringify({
               error: error.message || 'An error occurred',

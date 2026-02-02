@@ -38,3 +38,14 @@ export const recommendGuitarToolDef = toolDefinition({
     id: z.number(),
   }),
 })
+
+export const recommendGuitarTool = recommendGuitarToolDef.server(({ id }) => {
+  const numericId = typeof id === 'string' ? Number(id) : id
+  const guitar = guitars.find((item) => item.id === numericId)
+
+  if (!guitar) {
+    throw new Error('Guitar not found')
+  }
+
+  return { id: guitar.id }
+})

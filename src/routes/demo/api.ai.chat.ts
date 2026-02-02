@@ -1,12 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { chat, maxIterations, toServerSentEventsResponse } from '@tanstack/ai'
 import { anthropicText } from '@tanstack/ai-anthropic'
 import { openaiText } from '@tanstack/ai-openai'
 import { geminiText } from '@tanstack/ai-gemini'
 import { ollamaText } from '@tanstack/ai-ollama'
+import { createFileRoute } from '@tanstack/react-router'
 
-import { getGuitars, recommendGuitarToolDef } from '@/lib/demo-guitar-tools'
 import { env } from '@/env'
+import { getGuitars, recommendGuitarTool } from '@/lib/demo-guitar-tools'
+import { logApiError } from '@/utils/server-logger'
 
 const SYSTEM_PROMPT = `You are a helpful assistant for a store that sells guitars.
 
@@ -39,63 +40,106 @@ export const Route = createFileRoute('/demo/api/ai/chat')({
 
         const abortController = new AbortController()
 
+        type Provider = 'anthropic' | 'openai' | 'gemini' | 'ollama'
+        type ProviderConfig = {
+          provider: Provider
+          model: string
+          apiKey?: string
+        }
+
+        const providers: ProviderConfig[] = []
+
+        // if (env.ANTHROPIC_API_KEY) {
+        //   providers.push({
+        //     provider: 'anthropic',
+        //     model: 'claude-sonnet-4-5',
+        //     apiKey: env.ANTHROPIC_API_KEY,
+        //   })
+        // }
+
+        // if (env.OPENAI_API_KEY) {
+        //   providers.push({
+        //     provider: 'openai',
+        //     model: 'gpt-5.2',
+        //     apiKey: env.OPENAI_API_KEY,
+        //   })
+        // }
+
+        if (env.GEMINI_API_KEY) {
+          providers.push({
+            provider: 'gemini',
+            model: 'gemini-1.5-flash',
+            apiKey: env.GEMINI_API_KEY,
+          })
+        }
+
+        providers.push({
+          provider: 'ollama',
+          model: 'mistral:7b',
+          apiKey: 'always-available',
+        })
+
+        let provider: Provider | undefined
+        let model: string | undefined
+
         try {
           const body = await request.json()
           const { messages } = body
 
-          type Provider = 'anthropic' | 'openai' | 'gemini' | 'ollama'
+          // Build execution queue prioritizing providers with API keys, fallback to Ollama last
+          const availableProviders = providers.filter((config) => config.apiKey)
+          const executionQueue = availableProviders.length
+            ? availableProviders
+            : [providers[providers.length - 1]]
 
-          // Determine the best available provider
-          let provider: Provider = 'ollama'
-          let model: string = 'mistral:7b'
-          if (env.ANTHROPIC_API_KEY) {
-            provider = 'anthropic'
-            model = 'claude-haiku-4-5'
-          } else if (env.OPENAI_API_KEY) {
-            provider = 'openai'
-            model = 'gpt-4o'
-          } else if (env.GEMINI_API_KEY) {
-            provider = 'gemini'
-            model = 'gemini-2.0-flash-exp'
+          const getAdapter = (p: Provider, m: string) => {
+            if (p === 'anthropic') return anthropicText(m as any)
+            if (p === 'openai') return openaiText(m as any)
+            if (p === 'gemini') return geminiText(m as any)
+            return ollamaText(m as any)
           }
 
-          // Adapter factory pattern for multi-vendor support
-          type AdapterFactory = () =>
-            | ReturnType<typeof anthropicText>
-            | ReturnType<typeof openaiText>
-            | ReturnType<typeof geminiText>
-            | ReturnType<typeof ollamaText>
+          let lastError: Error | null = null
 
-          const adapterConfig: Record<Provider, AdapterFactory> = {
-            anthropic: () =>
-              anthropicText((model || 'claude-haiku-4-5') as any),
-            openai: () => openaiText((model || 'gpt-4o') as any),
-            gemini: () => geminiText((model || 'gemini-2.0-flash-exp') as any),
-            ollama: () => ollamaText((model || 'mistral:7b') as any),
+          for (const config of executionQueue) {
+            try {
+              provider = config.provider
+              model = config.model
+
+              console.log(`Attempting provider ${provider} with model ${model}`)
+
+              const stream = chat({
+                adapter: getAdapter(config.provider, config.model),
+                tools: [getGuitars, recommendGuitarTool],
+                systemPrompts: [SYSTEM_PROMPT],
+                agentLoopStrategy: maxIterations(5),
+                messages,
+                abortController,
+              })
+
+              return toServerSentEventsResponse(stream, { abortController })
+            } catch (attemptError: any) {
+              lastError = attemptError
+              console.error(`Provider ${config.provider} failed:`, attemptError.message)
+            }
           }
 
-          const adapter = adapterConfig[provider]()
+          if (lastError) {
+            throw lastError
+          }
 
-          const stream = chat({
-            adapter,
-            tools: [
-              getGuitars, // Server tool
-              recommendGuitarToolDef, // No server execute - client will handle
-            ],
-            systemPrompts: [SYSTEM_PROMPT],
-            agentLoopStrategy: maxIterations(5),
-            messages,
-            abortController,
-          })
-
-          return toServerSentEventsResponse(stream, { abortController })
+          throw new Error('No AI providers are configured')
         } catch (error: any) {
+          logApiError('POST /demo/api/ai/chat', error, {
+            provider,
+            model,
+          })
           // If request was aborted, return early (don't send error response)
           if (error.name === 'AbortError' || abortController.signal.aborted) {
             return new Response(null, { status: 499 }) // 499 = Client Closed Request
           }
           return new Response(
-            JSON.stringify({ error: 'Failed to process chat request' }),
+            JSON.stringify({ error: 'Failed to process chat request', details: error.message }),
             {
               status: 500,
               headers: { 'Content-Type': 'application/json' },

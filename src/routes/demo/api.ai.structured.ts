@@ -3,6 +3,8 @@ import { chat } from '@tanstack/ai'
 import { openaiText } from '@tanstack/ai-openai'
 import { z } from 'zod'
 
+import { logApiError } from '@/utils/server-logger'
+
 // Schema for structured recipe output
 const RecipeSchema = z.object({
   name: z.string().describe('The name of the recipe'),
@@ -60,7 +62,7 @@ export const Route = createFileRoute('/demo/api/ai/structured')({
           if (mode === 'structured') {
             // Structured output mode - returns validated object
             const result = await chat({
-              adapter: openaiText('gpt-4o'),
+              adapter: openaiText('gpt-5.2'),
               messages: [
                 {
                   role: 'user',
@@ -75,7 +77,7 @@ export const Route = createFileRoute('/demo/api/ai/structured')({
                 mode: 'structured',
                 recipe: result,
                 provider: 'openai',
-                model: 'gpt-4o',
+                model: 'gpt-5.2',
               }),
               {
                 status: 200,
@@ -85,7 +87,7 @@ export const Route = createFileRoute('/demo/api/ai/structured')({
           } else {
             // One-shot markdown mode - returns text
             const markdown = await chat({
-              adapter: openaiText('gpt-4o'),
+              adapter: openaiText('gpt-5.2'),
               stream: false,
               messages: [
                 {
@@ -111,7 +113,7 @@ Make it detailed and easy to follow.`,
                 mode: 'oneshot',
                 markdown,
                 provider: 'openai',
-                model: 'gpt-4o',
+                model: 'gpt-5.2',
               }),
               {
                 status: 200,
@@ -120,6 +122,10 @@ Make it detailed and easy to follow.`,
             )
           }
         } catch (error: any) {
+          logApiError('POST /demo/api/ai/structured', error, {
+            mode,
+            recipeName,
+          })
           return new Response(
             JSON.stringify({
               error: error.message || 'An error occurred',

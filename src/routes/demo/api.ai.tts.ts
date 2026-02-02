@@ -3,6 +3,7 @@ import { generateSpeech } from '@tanstack/ai'
 import { openaiSpeech } from '@tanstack/ai-openai'
 
 import { env } from '@/env'
+import { logApiError } from '@/utils/server-logger'
 
 export const Route = createFileRoute('/demo/api/ai/tts')({
   server: {
@@ -67,6 +68,11 @@ export const Route = createFileRoute('/demo/api/ai/tts')({
             },
           )
         } catch (error: any) {
+          logApiError('POST /demo/api/ai/tts', error, {
+            model,
+            voice,
+            format,
+          })
           return new Response(
             JSON.stringify({
               error: error.message || 'An error occurred',
