@@ -42,8 +42,10 @@ export const Route = createFileRoute('/demo/api/ai/chat')({
           const body = await request.json()
           const { messages } = body
 
+          type Provider = 'anthropic' | 'openai' | 'gemini' | 'ollama'
+
           // Determine the best available provider
-          let provider: string = 'ollama'
+          let provider: Provider = 'ollama'
           let model: string = 'mistral:7b'
           if (process.env.ANTHROPIC_API_KEY) {
             provider = 'anthropic'
@@ -57,7 +59,13 @@ export const Route = createFileRoute('/demo/api/ai/chat')({
           }
 
           // Adapter factory pattern for multi-vendor support
-          const adapterConfig = {
+          type AdapterFactory = () =>
+            | ReturnType<typeof anthropicText>
+            | ReturnType<typeof openaiText>
+            | ReturnType<typeof geminiText>
+            | ReturnType<typeof ollamaText>
+
+          const adapterConfig: Record<Provider, AdapterFactory> = {
             anthropic: () =>
               anthropicText((model || 'claude-haiku-4-5') as any),
             openai: () => openaiText((model || 'gpt-4o') as any),
