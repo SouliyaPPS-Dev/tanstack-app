@@ -12,6 +12,11 @@
   "framework": "react-cra",
   "chosenAddOns": [
     "start",
-    "tanstack-query"
+    "tanstack-query",
+    "ai",
+    "db",
+    "form",
+    "table",
+    "store"
   ]
 }

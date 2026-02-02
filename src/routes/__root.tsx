@@ -10,6 +10,10 @@ import Header from '../components/Header'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import AiDevtools from '../lib/ai-devtools'
+
+import StoreDevtools from '../lib/demo-store-devtools'
+
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -40,15 +44,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
-  notFoundComponent: () => {
-    return (
-      <div className="p-4">
-        <h1>404 - Not Found</h1>
-        <p>The page you are looking for does not exist.</p>
-      </div>
-    )
-  },
-
   shellComponent: RootDocument,
 })
 
@@ -71,6 +66,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
+            AiDevtools,
+            StoreDevtools,
           ]}
         />
         <Scripts />

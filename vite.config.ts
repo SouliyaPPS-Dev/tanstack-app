@@ -14,7 +14,40 @@ const config = defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('@tanstack/')) {
+              if (
+                id.includes('/react-query') ||
+                id.includes('/query-') ||
+                id.includes('/react-router') ||
+                id.includes('/router-') ||
+                id.includes('/react-start') ||
+                id.includes('/start-')
+              ) {
+                return 'tanstack-core'
+              }
+              if (id.includes('/react-table') || id.includes('/table-')) {
+                return 'tanstack-table'
+              }
+              if (
+                id.includes('/ai-') ||
+                id.includes('/react-ai') ||
+                id.includes('/ai/')
+              ) {
+                return 'tanstack-ai'
+              }
+              return 'tanstack-vendor'
+            }
+            if (id.includes('/react/') || id.includes('/react-dom/')) {
+              return 'react-vendor'
+            }
+          }
+        },
+      },
       onwarn(warning, warn) {
         if (
           warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
