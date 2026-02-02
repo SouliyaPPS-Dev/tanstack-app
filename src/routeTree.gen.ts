@@ -18,6 +18,7 @@ import { Route as DemoMcpTodosRouteImport } from './routes/demo/mcp-todos'
 import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
 import { Route as DemoDbChatApiRouteImport } from './routes/demo/db-chat-api'
 import { Route as DemoDbChatRouteImport } from './routes/demo/db-chat'
+import { Route as DemoCrudRouteImport } from './routes/demo/crud'
 import { Route as DemoAiStructuredRouteImport } from './routes/demo/ai-structured'
 import { Route as DemoAiImageRouteImport } from './routes/demo/ai-image'
 import { Route as DemoAiChatRouteImport } from './routes/demo/ai-chat'
@@ -83,6 +84,11 @@ const DemoDbChatApiRoute = DemoDbChatApiRouteImport.update({
 const DemoDbChatRoute = DemoDbChatRouteImport.update({
   id: '/demo/db-chat',
   path: '/demo/db-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoCrudRoute = DemoCrudRouteImport.update({
+  id: '/demo/crud',
+  path: '/demo/crud',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoAiStructuredRoute = DemoAiStructuredRouteImport.update({
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
+  '/demo/crud': typeof DemoCrudRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
+  '/demo/crud': typeof DemoCrudRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -262,6 +270,7 @@ export interface FileRoutesById {
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
+  '/demo/crud': typeof DemoCrudRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
+    | '/demo/crud'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/i18n'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
+    | '/demo/crud'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/i18n'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
+    | '/demo/crud'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
     | '/demo/i18n'
@@ -393,6 +405,7 @@ export interface RootRouteChildren {
   DemoAiChatRoute: typeof DemoAiChatRoute
   DemoAiImageRoute: typeof DemoAiImageRoute
   DemoAiStructuredRoute: typeof DemoAiStructuredRoute
+  DemoCrudRoute: typeof DemoCrudRoute
   DemoDbChatRoute: typeof DemoDbChatRoute
   DemoDbChatApiRoute: typeof DemoDbChatApiRoute
   DemoI18nRoute: typeof DemoI18nRoute
@@ -483,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/db-chat'
       fullPath: '/demo/db-chat'
       preLoaderRoute: typeof DemoDbChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/crud': {
+      id: '/demo/crud'
+      path: '/demo/crud'
+      fullPath: '/demo/crud'
+      preLoaderRoute: typeof DemoCrudRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/ai-structured': {
@@ -641,6 +661,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoAiChatRoute: DemoAiChatRoute,
   DemoAiImageRoute: DemoAiImageRoute,
   DemoAiStructuredRoute: DemoAiStructuredRoute,
+  DemoCrudRoute: DemoCrudRoute,
   DemoDbChatRoute: DemoDbChatRoute,
   DemoDbChatApiRoute: DemoDbChatApiRoute,
   DemoI18nRoute: DemoI18nRoute,
