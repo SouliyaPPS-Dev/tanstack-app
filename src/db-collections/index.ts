@@ -1,7 +1,9 @@
+import { env } from '@/env'
 import {
   createCollection,
   localOnlyCollectionOptions,
 } from '@tanstack/react-db'
+import { initClient } from 'trailbase'
 import { z } from 'zod'
 
 const MessageSchema = z.object({
@@ -18,3 +20,5 @@ export const messagesCollection = createCollection(
     schema: MessageSchema,
   }),
 )
+
+export const trailbaseClient = initClient(env.SERVER_URL)
