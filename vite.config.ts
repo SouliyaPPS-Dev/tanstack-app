@@ -5,10 +5,25 @@ import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { fileURLToPath, URL } from 'url'
 
+import tailwindcss from '@tailwindcss/vite'
+
 const config = defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  build: {
+    rollupOptions: {
+      onwarn(warning, warn) {
+        if (
+          warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
+          warning.message.includes('@tanstack/router-core')
+        ) {
+          return
+        }
+        warn(warning)
+      },
     },
   },
   plugins: [
@@ -17,7 +32,7 @@ const config = defineConfig({
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
-
+    tailwindcss(),
     tanstackStart(),
     viteReact(),
   ],

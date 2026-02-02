@@ -1,12 +1,24 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
 
+import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+
 import appCss from '../styles.css?url'
 
-export const Route = createRootRoute({
+import type { QueryClient } from '@tanstack/react-query'
+
+interface MyRouterContext {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
@@ -27,6 +39,15 @@ export const Route = createRootRoute({
       },
     ],
   }),
+
+  notFoundComponent: () => {
+    return (
+      <div className="p-4">
+        <h1>404 - Not Found</h1>
+        <p>The page you are looking for does not exist.</p>
+      </div>
+    )
+  },
 
   shellComponent: RootDocument,
 })
@@ -49,6 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               name: 'Tanstack Router',
               render: <TanStackRouterDevtoolsPanel />,
             },
+            TanStackQueryDevtools,
           ]}
         />
         <Scripts />
