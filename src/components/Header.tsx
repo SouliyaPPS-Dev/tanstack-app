@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router'
 
 import TanChatAIAssistant from './demo-AIAssistant.tsx'
 
+import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx'
+
 import { useState } from 'react'
 import {
   ChefHat,
@@ -11,6 +13,7 @@ import {
   Database,
   Home,
   ImageIcon,
+  Languages,
   Menu,
   MessagesSquare,
   Network,
@@ -309,11 +312,26 @@ export default function Header() {
             <span className="font-medium">MCP</span>
           </Link>
 
+          <Link
+            to="/demo/i18n"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+            activeProps={{
+              className:
+                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
+            }}
+          >
+            <Languages size={20} />
+            <span className="font-medium">I18n example</span>
+          </Link>
+
           {/* Demo Links End */}
         </nav>
 
         <div className="p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2">
           <TanChatAIAssistant />
+
+          <ParaglideLocaleSwitcher />
         </div>
       </aside>
     </>

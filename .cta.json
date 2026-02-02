@@ -21,6 +21,7 @@
     "compiler",
     "shadcn",
     "t3env",
-    "mcp"
+    "mcp",
+    "paraglide"
   ]
 }

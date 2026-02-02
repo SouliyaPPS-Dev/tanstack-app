@@ -15,6 +15,7 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-qu
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoStoreRouteImport } from './routes/demo/store'
 import { Route as DemoMcpTodosRouteImport } from './routes/demo/mcp-todos'
+import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
 import { Route as DemoDbChatApiRouteImport } from './routes/demo/db-chat-api'
 import { Route as DemoDbChatRouteImport } from './routes/demo/db-chat'
 import { Route as DemoAiStructuredRouteImport } from './routes/demo/ai-structured'
@@ -67,6 +68,11 @@ const DemoStoreRoute = DemoStoreRouteImport.update({
 const DemoMcpTodosRoute = DemoMcpTodosRouteImport.update({
   id: '/demo/mcp-todos',
   path: '/demo/mcp-todos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoI18nRoute = DemoI18nRouteImport.update({
+  id: '/demo/i18n',
+  path: '/demo/i18n',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoDbChatApiRoute = DemoDbChatApiRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/demo/ai-structured': typeof DemoAiStructuredRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
+  '/demo/i18n': typeof DemoI18nRoute
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/demo/ai-structured': typeof DemoAiStructuredRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
+  '/demo/i18n': typeof DemoI18nRoute
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/demo/ai-structured': typeof DemoAiStructuredRoute
   '/demo/db-chat': typeof DemoDbChatRoute
   '/demo/db-chat-api': typeof DemoDbChatApiRoute
+  '/demo/i18n': typeof DemoI18nRoute
   '/demo/mcp-todos': typeof DemoMcpTodosRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/demo/ai-structured'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
+    | '/demo/i18n'
     | '/demo/mcp-todos'
     | '/demo/store'
     | '/demo/table'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/demo/ai-structured'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
+    | '/demo/i18n'
     | '/demo/mcp-todos'
     | '/demo/store'
     | '/demo/table'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/demo/ai-structured'
     | '/demo/db-chat'
     | '/demo/db-chat-api'
+    | '/demo/i18n'
     | '/demo/mcp-todos'
     | '/demo/store'
     | '/demo/table'
@@ -383,6 +395,7 @@ export interface RootRouteChildren {
   DemoAiStructuredRoute: typeof DemoAiStructuredRoute
   DemoDbChatRoute: typeof DemoDbChatRoute
   DemoDbChatApiRoute: typeof DemoDbChatApiRoute
+  DemoI18nRoute: typeof DemoI18nRoute
   DemoMcpTodosRoute: typeof DemoMcpTodosRoute
   DemoStoreRoute: typeof DemoStoreRoute
   DemoTableRoute: typeof DemoTableRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/mcp-todos'
       fullPath: '/demo/mcp-todos'
       preLoaderRoute: typeof DemoMcpTodosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/i18n': {
+      id: '/demo/i18n'
+      path: '/demo/i18n'
+      fullPath: '/demo/i18n'
+      preLoaderRoute: typeof DemoI18nRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/db-chat-api': {
@@ -623,6 +643,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoAiStructuredRoute: DemoAiStructuredRoute,
   DemoDbChatRoute: DemoDbChatRoute,
   DemoDbChatApiRoute: DemoDbChatApiRoute,
+  DemoI18nRoute: DemoI18nRoute,
   DemoMcpTodosRoute: DemoMcpTodosRoute,
   DemoStoreRoute: DemoStoreRoute,
   DemoTableRoute: DemoTableRoute,

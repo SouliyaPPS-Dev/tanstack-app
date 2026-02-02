@@ -26,48 +26,48 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h3 className='text-2xl font-bold text-white mb-2'>{recipe.name}</h3>
-        <p className='text-gray-400'>{recipe.description}</p>
+        <h3 className="text-2xl font-bold text-white mb-2">{recipe.name}</h3>
+        <p className="text-gray-400">{recipe.description}</p>
       </div>
 
       {/* Meta info */}
-      <div className='flex flex-wrap gap-4'>
-        <div className='flex items-center gap-2 text-gray-300'>
-          <Clock className='w-4 h-4 text-orange-400' />
-          <span className='text-sm'>Prep: {recipe.prepTime}</span>
+      <div className="flex flex-wrap gap-4">
+        <div className="flex items-center gap-2 text-gray-300">
+          <Clock className="w-4 h-4 text-orange-400" />
+          <span className="text-sm">Prep: {recipe.prepTime}</span>
         </div>
-        <div className='flex items-center gap-2 text-gray-300'>
-          <Clock className='w-4 h-4 text-orange-400' />
-          <span className='text-sm'>Cook: {recipe.cookTime}</span>
+        <div className="flex items-center gap-2 text-gray-300">
+          <Clock className="w-4 h-4 text-orange-400" />
+          <span className="text-sm">Cook: {recipe.cookTime}</span>
         </div>
-        <div className='flex items-center gap-2 text-gray-300'>
-          <Users className='w-4 h-4 text-orange-400' />
-          <span className='text-sm'>{recipe.servings} servings</span>
+        <div className="flex items-center gap-2 text-gray-300">
+          <Users className="w-4 h-4 text-orange-400" />
+          <span className="text-sm">{recipe.servings} servings</span>
         </div>
         <div
           className={`flex items-center gap-2 px-2 py-1 rounded-full ${
             difficultyColors[recipe.difficulty]
           }`}
         >
-          <Gauge className='w-4 h-4' />
-          <span className='text-sm capitalize'>{recipe.difficulty}</span>
+          <Gauge className="w-4 h-4" />
+          <span className="text-sm capitalize">{recipe.difficulty}</span>
         </div>
       </div>
 
       {/* Ingredients */}
       <div>
-        <h4 className='text-lg font-semibold text-white mb-3'>Ingredients</h4>
-        <ul className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+        <h4 className="text-lg font-semibold text-white mb-3">Ingredients</h4>
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {recipe.ingredients.map((ing, idx) => (
-            <li key={idx} className='flex items-start gap-2 text-gray-300'>
-              <span className='text-orange-400'>•</span>
+            <li key={idx} className="flex items-start gap-2 text-gray-300">
+              <span className="text-orange-400">•</span>
               <span>
-                <span className='font-medium'>{ing.amount}</span> {ing.item}
+                <span className="font-medium">{ing.amount}</span> {ing.item}
                 {ing.notes && (
-                  <span className='text-gray-500 text-sm'> ({ing.notes})</span>
+                  <span className="text-gray-500 text-sm"> ({ing.notes})</span>
                 )}
               </span>
             </li>
@@ -77,11 +77,11 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
 
       {/* Instructions */}
       <div>
-        <h4 className='text-lg font-semibold text-white mb-3'>Instructions</h4>
-        <ol className='space-y-3'>
+        <h4 className="text-lg font-semibold text-white mb-3">Instructions</h4>
+        <ol className="space-y-3">
           {recipe.instructions.map((step, idx) => (
-            <li key={idx} className='flex gap-3 text-gray-300'>
-              <span className='shrink-0 w-6 h-6 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center text-sm font-medium'>
+            <li key={idx} className="flex gap-3 text-gray-300">
+              <span className="flex-shrink-0 w-6 h-6 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center text-sm font-medium">
                 {idx + 1}
               </span>
               <span>{step}</span>
@@ -93,11 +93,11 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
       {/* Tips */}
       {recipe.tips && recipe.tips.length > 0 && (
         <div>
-          <h4 className='text-lg font-semibold text-white mb-3'>Tips</h4>
-          <ul className='space-y-2'>
+          <h4 className="text-lg font-semibold text-white mb-3">Tips</h4>
+          <ul className="space-y-2">
             {recipe.tips.map((tip, idx) => (
-              <li key={idx} className='flex items-start gap-2 text-gray-300'>
-                <span className='text-yellow-400'>*</span>
+              <li key={idx} className="flex items-start gap-2 text-gray-300">
+                <span className="text-yellow-400">*</span>
                 <span>{tip}</span>
               </li>
             ))}
@@ -108,27 +108,27 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
       {/* Nutrition */}
       {recipe.nutritionPerServing && (
         <div>
-          <h4 className='text-lg font-semibold text-white mb-3'>
+          <h4 className="text-lg font-semibold text-white mb-3">
             Nutrition (per serving)
           </h4>
-          <div className='flex flex-wrap gap-4 text-sm'>
+          <div className="flex flex-wrap gap-4 text-sm">
             {recipe.nutritionPerServing.calories && (
-              <span className='px-3 py-1 bg-gray-700 rounded-full text-gray-300'>
+              <span className="px-3 py-1 bg-gray-700 rounded-full text-gray-300">
                 {recipe.nutritionPerServing.calories} cal
               </span>
             )}
             {recipe.nutritionPerServing.protein && (
-              <span className='px-3 py-1 bg-gray-700 rounded-full text-gray-300'>
+              <span className="px-3 py-1 bg-gray-700 rounded-full text-gray-300">
                 Protein: {recipe.nutritionPerServing.protein}
               </span>
             )}
             {recipe.nutritionPerServing.carbs && (
-              <span className='px-3 py-1 bg-gray-700 rounded-full text-gray-300'>
+              <span className="px-3 py-1 bg-gray-700 rounded-full text-gray-300">
                 Carbs: {recipe.nutritionPerServing.carbs}
               </span>
             )}
             {recipe.nutritionPerServing.fat && (
-              <span className='px-3 py-1 bg-gray-700 rounded-full text-gray-300'>
+              <span className="px-3 py-1 bg-gray-700 rounded-full text-gray-300">
                 Fat: {recipe.nutritionPerServing.fat}
               </span>
             )}
@@ -136,7 +136,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function StructuredPage() {

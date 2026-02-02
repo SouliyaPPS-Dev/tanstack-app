@@ -44,21 +44,21 @@ function Messages({ messages }: { messages: ChatMessages }) {
           {parts.map((part, index) => {
             if (part.type === 'text' && part.content) {
               return (
-                <div key={index} className='flex items-start gap-2 px-4'>
+                <div key={index} className="flex items-start gap-2 px-4">
                   {role === 'assistant' ? (
-                    <div className='w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white shrink-0'>
+                    <div className="w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
                       AI
                     </div>
                   ) : (
-                    <div className='w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white shrink-0'>
+                    <div className="w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
                       Y
                     </div>
                   )}
-                  <div className='flex-1 min-w-0 text-white prose dark:prose-invert max-w-none prose-sm'>
+                  <div className="flex-1 min-w-0 text-white prose dark:prose-invert max-w-none prose-sm">
                     <Streamdown>{part.content}</Streamdown>
                   </div>
                 </div>
-              );
+              )
             }
             if (
               part.type === 'tool-call' &&
