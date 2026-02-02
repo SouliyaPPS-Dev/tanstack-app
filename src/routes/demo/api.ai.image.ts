@@ -36,14 +36,12 @@ export const Route = createFileRoute('/demo/api/ai/image')({
         try {
           const options = createImageOptions({
             adapter: openaiImage('gpt-image-1'),
-          })
-
-          const result = await generateImage({
-            ...options,
             prompt,
             numberOfImages,
             size,
           })
+
+          const result = await generateImage(options)
 
           return new Response(
             JSON.stringify({
