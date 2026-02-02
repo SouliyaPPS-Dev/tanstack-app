@@ -100,27 +100,27 @@ function Messages({
                   : 'bg-transparent'
               }`}
             >
-              <div className="flex items-start gap-4 max-w-3xl mx-auto w-full">
+              <div className='flex items-start gap-4 max-w-3xl mx-auto w-full'>
                 {message.role === 'assistant' ? (
-                  <div className="w-8 h-8 rounded-lg bg-linear-to-r from-orange-500 to-red-600 mt-2 flex items-center justify-center text-sm font-medium text-white flex-shrink-0">
+                  <div className='w-8 h-8 rounded-lg bg-linear-to-r from-orange-500 to-red-600 mt-2 flex items-center justify-center text-sm font-medium text-white shrink-0'>
                     AI
                   </div>
                 ) : (
-                  <div className="w-8 h-8 rounded-lg bg-gray-700 flex items-center justify-center text-sm font-medium text-white flex-shrink-0">
+                  <div className='w-8 h-8 rounded-lg bg-gray-700 flex items-center justify-center text-sm font-medium text-white shrink-0'>
                     Y
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
+                <div className='flex-1 min-w-0'>
                   {message.parts.map((part, index) => {
                     if (part.type === 'text' && part.content) {
                       return (
                         <div
-                          className="flex-1 min-w-0 prose dark:prose-invert max-w-none prose-sm"
+                          className='flex-1 min-w-0 prose dark:prose-invert max-w-none prose-sm'
                           key={index}
                         >
                           <Streamdown>{part.content}</Streamdown>
                         </div>
-                      )
+                      );
                     }
                     // Guitar recommendation card
                     if (
@@ -129,12 +129,12 @@ function Messages({
                       part.output
                     ) {
                       return (
-                        <div key={part.id} className="max-w-[80%] mx-auto">
+                        <div key={part.id} className='max-w-[80%] mx-auto'>
                           <GuitarRecommendation id={String(part.output?.id)} />
                         </div>
-                      )
+                      );
                     }
-                    return null
+                    return null;
                   })}
                 </div>
                 {/* TTS button for assistant messages */}
@@ -145,19 +145,19 @@ function Messages({
                         ? onStopSpeak()
                         : onSpeak(textContent, message.id)
                     }
-                    className="flex-shrink-0 p-2 text-gray-400 hover:text-orange-400 transition-colors"
+                    className='shrink-0 p-2 text-gray-400 hover:text-orange-400 transition-colors'
                     title={isPlaying ? 'Stop speaking' : 'Read aloud'}
                   >
                     {isPlaying ? (
-                      <VolumeX className="w-4 h-4" />
+                      <VolumeX className='w-4 h-4' />
                     ) : (
-                      <Volume2 className="w-4 h-4" />
+                      <Volume2 className='w-4 h-4' />
                     )}
                   </button>
                 )}
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
