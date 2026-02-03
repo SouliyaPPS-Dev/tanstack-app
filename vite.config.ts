@@ -54,12 +54,37 @@ const config = defineConfig({
       },
       onwarn(warning, warn) {
         if (
-          warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
-          warning.message.includes('@tanstack/router-core')
+          warning.message.includes('use client') ||
+          warning.message.includes('Module level directives') ||
+          warning.message.includes('Failed to load the WebAssembly module') ||
+          (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
+            warning.message.includes('@tanstack/router-core'))
         ) {
           return
         }
         warn(warning)
+      },
+    },
+  },
+  // For Vite 7 Environment API
+  // @ts-ignore
+  environments: {
+    nitro: {
+      build: {
+        rollupOptions: {
+          onwarn(warning, warn) {
+            if (
+              warning.message.includes('use client') ||
+              warning.message.includes('Module level directives') ||
+              warning.message.includes('Failed to load the WebAssembly module') ||
+              (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
+                warning.message.includes('@tanstack/router-core'))
+            ) {
+              return
+            }
+            warn(warning)
+          },
+        },
       },
     },
   },
