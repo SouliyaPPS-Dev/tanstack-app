@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { TanStackDevtools } from '@tanstack/react-devtools';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import Header from '../components/Header';
 
@@ -75,6 +76,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <Header />
         {children}
+        <SpeedInsights />
         <TanStackDevtools
           config={{
             position: 'bottom-right',
