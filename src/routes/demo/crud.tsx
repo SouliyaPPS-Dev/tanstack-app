@@ -1,25 +1,76 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { createServerFn } from '@tanstack/react-start';
 import { ListChecks, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { z } from 'zod';
 
 import {
   inventoryCollection,
   type InventoryItem,
 } from '@/db-collections/inventory';
 
+const getInventory = createServerFn({ method: 'GET' }).handler(async () => {
+  await inventoryCollection.preload();
+  return Array.from(inventoryCollection.state.values());
+});
+
+const saveInventoryItem = createServerFn({ method: 'POST' })
+  .inputValidator(
+    z.object({
+      id: z.number().optional(),
+      name: z.string(),
+      category: z.string(),
+      stock: z.number(),
+      price: z.number(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    if (data.id) {
+      // Update existing item
+      inventoryCollection.update(data.id, (draft) => {
+        draft.name = data.name;
+        draft.category = data.category;
+        draft.stock = data.stock;
+        draft.price = data.price;
+        draft.updated_at = new Date();
+      });
+      return { success: true, action: 'update' };
+    } else {
+      // Insert new item
+      const now = new Date();
+      inventoryCollection.insert({
+        id: Date.now(),
+        name: data.name,
+        category: data.category,
+        stock: data.stock,
+        price: data.price,
+        created_at: now,
+        updated_at: now,
+      });
+      return { success: true, action: 'insert' };
+    }
+  });
+
+const deleteInventoryItem = createServerFn({ method: 'POST' })
+  .inputValidator(z.number())
+  .handler(async ({ data }) => {
+    inventoryCollection.delete(data);
+    return { success: true };
+  });
+
 // routes/demo/crud.tsx
 export const Route = createFileRoute('/demo/crud')({
   loader: async () => {
-    // await inventoryCollection.preload() ensures initial list
-    await inventoryCollection.preload();
+    const items = await getInventory();
     return {
-      initialItems: Array.from(inventoryCollection.state.values()),
+      initialItems: items,
     };
   },
   component: CrudDemo,
 });
 
 function CrudDemo() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formValues, setFormValues] = useState({
@@ -70,9 +121,12 @@ function CrudDemo() {
     });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+
     try {
-      inventoryCollection.delete(id);
+      await deleteInventoryItem({ data: id });
+      router.invalidate();
       if (editingId === id) {
         resetForm();
       }
@@ -92,26 +146,16 @@ function CrudDemo() {
 
     setIsSaving(true);
     try {
-      if (editingId !== null) {
-        inventoryCollection.update(editingId, (draft) => {
-          draft.name = formValues.name.trim();
-          draft.category = formValues.category.trim();
-          draft.stock = stock;
-          draft.price = price;
-          draft.updated_at = new Date();
-        });
-      } else {
-        const now = new Date();
-        inventoryCollection.insert({
-          id: Date.now(),
+      await saveInventoryItem({
+        data: {
+          id: editingId ?? undefined,
           name: formValues.name.trim(),
           category: formValues.category.trim(),
           stock,
           price,
-          created_at: now,
-          updated_at: now,
-        });
-      }
+        },
+      });
+      router.invalidate();
       resetForm();
     } catch (error) {
       console.error('Failed to save inventory item', error);
