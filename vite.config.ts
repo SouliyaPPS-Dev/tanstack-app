@@ -57,6 +57,7 @@ const config = defineConfig({
           warning.message.includes('use client') ||
           warning.message.includes('Module level directives') ||
           warning.message.includes('Failed to load the WebAssembly module') ||
+          warning.code === 'MODULE_LEVEL_DIRECTIVE' ||
           (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
             warning.message.includes('@tanstack/router-core'))
         ) {
@@ -77,6 +78,7 @@ const config = defineConfig({
               warning.message.includes('use client') ||
               warning.message.includes('Module level directives') ||
               warning.message.includes('Failed to load the WebAssembly module') ||
+              warning.code === 'MODULE_LEVEL_DIRECTIVE' ||
               (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
                 warning.message.includes('@tanstack/router-core'))
             ) {
