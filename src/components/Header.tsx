@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Languages, ListChecks, Menu, X } from 'lucide-react';
 
 import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx';
-import TanChatAIAssistant from './demo-AIAssistant.tsx';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,8 +73,6 @@ export default function Header() {
         </nav>
 
         <div className='p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2'>
-          <TanChatAIAssistant />
-
           <ParaglideLocaleSwitcher />
         </div>
       </aside>
