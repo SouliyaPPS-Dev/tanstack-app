@@ -1,34 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import {
-  ChefHat,
-  ChevronDown,
-  ChevronRight,
-  ClipboardType,
-  Database,
-  Home,
-  ImageIcon,
-  Languages,
-  ListChecks,
-  Menu,
-  MessagesSquare,
-  Network,
-  SquareFunction,
-  StickyNote,
-  Store,
-  Table,
-  Webhook,
-  X,
-} from 'lucide-react';
+import { Languages, ListChecks, Menu, X } from 'lucide-react';
 
 import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx';
 import TanChatAIAssistant from './demo-AIAssistant.tsx';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [groupedExpanded, setGroupedExpanded] = useState<
-    Record<string, boolean>
-  >({});
 
   return (
     <>
@@ -69,20 +47,6 @@ export default function Header() {
 
         <nav className='flex-1 p-4 overflow-y-auto'>
           <Link
-            to='/'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Home size={20} />
-            <span className='font-medium'>Home</span>
-          </Link>
-
-          {/* Inventory CRUD */}
-          <Link
             to='/demo/crud'
             onClick={() => setIsOpen(false)}
             className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
@@ -92,237 +56,7 @@ export default function Header() {
             }}
           >
             <ListChecks size={20} />
-            <span className='font-medium'>Inventory CRUD Tailbase</span>
-          </Link>
-
-          {/* Demo Links Start */}
-
-          <Link
-            to='/demo/start/server-funcs'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <SquareFunction size={20} />
-            <span className='font-medium'>Start - Server Functions</span>
-          </Link>
-
-          <Link
-            to='/demo/start/api-request'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Network size={20} />
-            <span className='font-medium'>Start - API Request</span>
-          </Link>
-
-          <div className='flex flex-row justify-between'>
-            <Link
-              to='/demo/start/ssr'
-              onClick={() => setIsOpen(false)}
-              className='flex-1 flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-              activeProps={{
-                className:
-                  'flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-              }}
-            >
-              <StickyNote size={20} />
-              <span className='font-medium'>Start - SSR Demos</span>
-            </Link>
-            <button
-              className='p-2 hover:bg-gray-800 rounded-lg transition-colors'
-              onClick={() =>
-                setGroupedExpanded((prev) => ({
-                  ...prev,
-                  StartSSRDemo: !prev.StartSSRDemo,
-                }))
-              }
-            >
-              {groupedExpanded.StartSSRDemo ? (
-                <ChevronDown size={20} />
-              ) : (
-                <ChevronRight size={20} />
-              )}
-            </button>
-          </div>
-          {groupedExpanded.StartSSRDemo && (
-            <div className='flex flex-col ml-4'>
-              <Link
-                to='/demo/start/ssr/spa-mode'
-                onClick={() => setIsOpen(false)}
-                className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-                activeProps={{
-                  className:
-                    'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-                }}
-              >
-                <StickyNote size={20} />
-                <span className='font-medium'>SPA Mode</span>
-              </Link>
-
-              <Link
-                to='/demo/start/ssr/full-ssr'
-                onClick={() => setIsOpen(false)}
-                className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-                activeProps={{
-                  className:
-                    'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-                }}
-              >
-                <StickyNote size={20} />
-                <span className='font-medium'>Full SSR</span>
-              </Link>
-
-              <Link
-                to='/demo/start/ssr/data-only'
-                onClick={() => setIsOpen(false)}
-                className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-                activeProps={{
-                  className:
-                    'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-                }}
-              >
-                <StickyNote size={20} />
-                <span className='font-medium'>Data Only</span>
-              </Link>
-            </div>
-          )}
-
-          <Link
-            to='/demo/tanstack-query'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Network size={20} />
-            <span className='font-medium'>TanStack Query</span>
-          </Link>
-
-          <Link
-            to='/demo/ai-chat'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <MessagesSquare size={20} />
-            <span className='font-medium'>Chat</span>
-          </Link>
-
-          <Link
-            to='/demo/ai-image'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <ImageIcon size={20} />
-            <span className='font-medium'>Generate Image</span>
-          </Link>
-
-          <Link
-            to='/demo/ai-structured'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <ChefHat size={20} />
-            <span className='font-medium'>Structured Output</span>
-          </Link>
-
-          <Link
-            to='/demo/db-chat'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Database size={20} />
-            <span className='font-medium'>DB Chat</span>
-          </Link>
-
-          <Link
-            to='/demo/form/simple'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <ClipboardType size={20} />
-            <span className='font-medium'>Simple Form</span>
-          </Link>
-
-          <Link
-            to='/demo/form/address'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <ClipboardType size={20} />
-            <span className='font-medium'>Address Form</span>
-          </Link>
-
-          <Link
-            to='/demo/table'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Table size={20} />
-            <span className='font-medium'>TanStack Table</span>
-          </Link>
-
-          <Link
-            to='/demo/store'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Store size={20} />
-            <span className='font-medium'>Store</span>
-          </Link>
-
-          <Link
-            to='/demo/mcp-todos'
-            onClick={() => setIsOpen(false)}
-            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2'
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Webhook size={20} />
-            <span className='font-medium'>MCP</span>
+            <span className='font-medium'>Inventory CRUD Trailbase</span>
           </Link>
 
           <Link
@@ -337,8 +71,6 @@ export default function Header() {
             <Languages size={20} />
             <span className='font-medium'>I18n example</span>
           </Link>
-
-          {/* Demo Links End */}
         </nav>
 
         <div className='p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2'>

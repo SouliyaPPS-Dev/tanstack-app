@@ -5,6 +5,7 @@ import {
      type TrailBaseCollectionUtils,
 } from '@tanstack/trailbase-db-collection'
 import { initClient } from 'trailbase'
+import type { FilterOrComposite } from 'trailbase'
 import { z } from 'zod'
 
 import { env } from '@/env'
@@ -76,3 +77,38 @@ export const inventoryCollection = createCollection<
      ...trailbaseOptions,
      schema: inventorySchema,
 })
+
+const parseInventoryRecord = (record: InventoryRecord): InventoryItem => ({
+     id: record.id,
+     name: record.name,
+     category: record.category,
+     stock: record.stock,
+     price: record.price,
+     created_at: new Date(record.created_at),
+     updated_at: new Date(record.updated_at),
+})
+
+export async function fetchInventory(params?: { search?: string }) {
+     const normalizedSearch = params?.search?.trim()
+     const filters: FilterOrComposite[] = normalizedSearch
+          ? [
+               {
+                    or: [
+                         { column: 'name', op: 'like', value: `%${normalizedSearch}%` },
+                         {
+                              column: 'category',
+                              op: 'like',
+                              value: `%${normalizedSearch}%`,
+                         },
+                    ],
+               },
+          ]
+          : []
+
+     const response = await recordApi.list({
+          filters: filters.length ? filters : undefined,
+          order: ['name'],
+     })
+
+     return response.records.map(parseInventoryRecord)
+}

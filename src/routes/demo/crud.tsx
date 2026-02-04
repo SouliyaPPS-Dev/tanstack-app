@@ -6,13 +6,19 @@ import { z } from 'zod';
 
 import {
   inventoryCollection,
+  fetchInventory,
   type InventoryItem,
 } from '@/db-collections/inventory';
 
-const getInventory = createServerFn({ method: 'GET' }).handler(async () => {
-  await inventoryCollection.preload();
-  return Array.from(inventoryCollection.state.values());
-});
+const getInventory = createServerFn({ method: 'GET' })
+  .inputValidator(
+    z.object({
+      search: z.string().optional(),
+    }),
+  )
+  .handler(async ({ data }) => {
+    return fetchInventory({ search: data?.search });
+  });
 
 const saveInventoryItem = createServerFn({ method: 'POST' })
   .inputValidator(
@@ -58,10 +64,21 @@ const deleteInventoryItem = createServerFn({ method: 'POST' })
     return { success: true };
   });
 
+const searchSchema = z.object({
+  q: z.string().optional(),
+});
+
 // routes/demo/crud.tsx
 export const Route = createFileRoute('/demo/crud')({
-  loader: async () => {
-    const items = await getInventory();
+  validateSearch: searchSchema,
+  loader: async ({ location }) => {
+    const searchParams = location.search as { q?: string };
+    const searchTerm = searchParams.q ?? undefined;
+    const items = await getInventory({
+      data: {
+        search: searchTerm,
+      },
+    });
     return {
       initialItems: items,
     };
@@ -71,7 +88,6 @@ export const Route = createFileRoute('/demo/crud')({
 
 function CrudDemo() {
   const router = useRouter();
-  const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formValues, setFormValues] = useState({
     name: '',
@@ -82,20 +98,10 @@ function CrudDemo() {
   const [isSaving, setIsSaving] = useState(false);
 
   const { initialItems } = Route.useLoaderData();
+  const searchParams = Route.useSearch();
 
-  const liveQuery = { data: initialItems };
-
-  const items = (liveQuery.data ?? []) as InventoryItem[];
-
-  const filteredItems = useMemo(() => {
-    const normalized = search.trim().toLowerCase();
-    if (!normalized) return items;
-    return items.filter((item) =>
-      [item.name, item.category].some((value) =>
-        value.toLowerCase().includes(normalized),
-      ),
-    );
-  }, [items, search]);
+  const items = (initialItems ?? []) as InventoryItem[];
+  const currentSearch = searchParams.q ?? '';
 
   const totalStock = useMemo(
     () => items.reduce((sum, item) => sum + item.stock, 0),
@@ -213,8 +219,17 @@ function CrudDemo() {
               </div>
               <input
                 type='search'
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                value={currentSearch}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  router.navigate({
+                    to: '/demo/crud',
+                    search: {
+                      q: nextValue || undefined,
+                    },
+                    replace: true,
+                  });
+                }}
                 placeholder='Search inventory...'
                 className='w-full md:w-64 rounded-xl border border-white/20 bg-black/30 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400'
               />
@@ -232,7 +247,7 @@ function CrudDemo() {
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-white/5'>
-                  {filteredItems.map((item) => (
+                  {items.map((item) => (
                     <tr key={item.id}>
                       <td className='py-4 font-medium'>{item.name}</td>
                       <td className='py-4 text-gray-300'>{item.category}</td>
@@ -258,13 +273,13 @@ function CrudDemo() {
                       </td>
                     </tr>
                   ))}
-                  {filteredItems.length === 0 && (
+                  {items.length === 0 && (
                     <tr>
                       <td
                         className='py-8 text-center text-gray-500'
                         colSpan={5}
                       >
-                        No products match your search.
+                        No products found.
                       </td>
                     </tr>
                   )}
