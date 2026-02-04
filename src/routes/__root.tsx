@@ -21,12 +21,16 @@ import appCss from '../styles.css?url';
 
 import type { QueryClient } from '@tanstack/react-query';
 
+import type { AuthStore } from '@/lib/auth-store';
+
 interface MyRouterContext {
   queryClient: QueryClient;
+  auth: AuthStore;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  beforeLoad: async () => {
+  beforeLoad: async ({ context }) => {
+    await context.auth.ensureSession();
     // Other redirect strategies are possible; see
     // https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#offline-redirect
     if (typeof document !== 'undefined') {

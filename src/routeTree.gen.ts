@@ -9,58 +9,86 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoI18nRouteImport } from './routes/demo/i18n'
-import { Route as DemoCrudRouteImport } from './routes/demo/crud'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AdminI18nRouteImport } from './routes/_admin/i18n'
+import { Route as AdminCrudRouteImport } from './routes/_admin/crud'
 
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoI18nRoute = DemoI18nRouteImport.update({
-  id: '/demo/i18n',
-  path: '/demo/i18n',
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoCrudRoute = DemoCrudRouteImport.update({
-  id: '/demo/crud',
-  path: '/demo/crud',
-  getParentRoute: () => rootRouteImport,
+const AdminI18nRoute = AdminI18nRouteImport.update({
+  id: '/i18n',
+  path: '/i18n',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCrudRoute = AdminCrudRouteImport.update({
+  id: '/crud',
+  path: '/crud',
+  getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/demo/crud': typeof DemoCrudRoute
-  '/demo/i18n': typeof DemoI18nRoute
+  '/crud': typeof AdminCrudRoute
+  '/i18n': typeof AdminI18nRoute
+  '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/demo/crud': typeof DemoCrudRoute
-  '/demo/i18n': typeof DemoI18nRoute
+  '/crud': typeof AdminCrudRoute
+  '/i18n': typeof AdminI18nRoute
+  '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/demo/crud': typeof DemoCrudRoute
-  '/demo/i18n': typeof DemoI18nRoute
+  '/_admin': typeof AdminRouteWithChildren
+  '/_admin/crud': typeof AdminCrudRoute
+  '/_admin/i18n': typeof AdminI18nRoute
+  '/auth/login': typeof AuthLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/crud' | '/demo/i18n'
+  fullPaths: '/' | '/crud' | '/i18n' | '/auth/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/crud' | '/demo/i18n'
-  id: '__root__' | '/' | '/demo/crud' | '/demo/i18n'
+  to: '/' | '/crud' | '/i18n' | '/auth/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/_admin'
+    | '/_admin/crud'
+    | '/_admin/i18n'
+    | '/auth/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DemoCrudRoute: typeof DemoCrudRoute
-  DemoI18nRoute: typeof DemoI18nRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthLoginRoute: typeof AuthLoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -68,27 +96,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/i18n': {
-      id: '/demo/i18n'
-      path: '/demo/i18n'
-      fullPath: '/demo/i18n'
-      preLoaderRoute: typeof DemoI18nRouteImport
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/crud': {
-      id: '/demo/crud'
-      path: '/demo/crud'
-      fullPath: '/demo/crud'
-      preLoaderRoute: typeof DemoCrudRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_admin/i18n': {
+      id: '/_admin/i18n'
+      path: '/i18n'
+      fullPath: '/i18n'
+      preLoaderRoute: typeof AdminI18nRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/crud': {
+      id: '/_admin/crud'
+      path: '/crud'
+      fullPath: '/crud'
+      preLoaderRoute: typeof AdminCrudRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
+interface AdminRouteChildren {
+  AdminCrudRoute: typeof AdminCrudRoute
+  AdminI18nRoute: typeof AdminI18nRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCrudRoute: AdminCrudRoute,
+  AdminI18nRoute: AdminI18nRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DemoCrudRoute: DemoCrudRoute,
-  DemoI18nRoute: DemoI18nRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthLoginRoute: AuthLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

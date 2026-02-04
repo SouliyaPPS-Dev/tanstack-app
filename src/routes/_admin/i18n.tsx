@@ -3,7 +3,7 @@ import logo from '@/logo.svg';
 import { m } from '@/paraglide/messages';
 import LocaleSwitcher from '@/components/LocaleSwitcher';
 
-export const Route = createFileRoute('/demo/i18n')({
+export const Route = createFileRoute('/_admin/i18n')({
   component: App,
 });
 

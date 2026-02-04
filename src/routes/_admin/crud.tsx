@@ -5,8 +5,8 @@ import { useMemo, useState } from 'react';
 import { z } from 'zod';
 
 import {
-  inventoryCollection,
   fetchInventory,
+  inventoryCollection,
   type InventoryItem,
 } from '@/db-collections/inventory';
 
@@ -68,9 +68,10 @@ const searchSchema = z.object({
   q: z.string().optional(),
 });
 
-// routes/demo/crud.tsx
-export const Route = createFileRoute('/demo/crud')({
+// routes/admin/crud.tsx
+export const Route = createFileRoute('/_admin/crud')({
   validateSearch: searchSchema,
+
   loader: async ({ location }) => {
     const searchParams = location.search as { q?: string };
     const searchTerm = searchParams.q ?? undefined;
@@ -223,7 +224,7 @@ function CrudDemo() {
                 onChange={(event) => {
                   const nextValue = event.target.value;
                   router.navigate({
-                    to: '/demo/crud',
+                    to: '/crud',
                     search: {
                       q: nextValue || undefined,
                     },
