@@ -8,6 +8,35 @@ import { fileURLToPath, URL } from 'url'
 import { nitro } from 'nitro/vite'
 
 import tailwindcss from '@tailwindcss/vite'
+import type { Plugin } from 'vite'
+
+// Plugin to suppress "use client" warnings
+const suppressUseClientWarnings = (): Plugin => ({
+  name: 'suppress-use-client-warnings',
+  config(config) {
+    const originalOnwarn = config.build?.rollupOptions?.onwarn
+    return {
+      build: {
+        rollupOptions: {
+          onwarn(warning, defaultHandler) {
+            if (
+              warning.message?.includes('use client') ||
+              warning.message?.includes('Module level directives') ||
+              warning.code === 'MODULE_LEVEL_DIRECTIVE'
+            ) {
+              return
+            }
+            if (originalOnwarn) {
+              originalOnwarn(warning, defaultHandler)
+            } else {
+              defaultHandler(warning)
+            }
+          },
+        },
+      },
+    }
+  },
+})
 
 const config = defineConfig({
   resolve: {
@@ -72,6 +101,7 @@ const config = defineConfig({
   environments: {
     nitro: {
       build: {
+        sourcemap: false,
         rollupOptions: {
           onwarn(warning, warn) {
             if (
@@ -88,9 +118,14 @@ const config = defineConfig({
           },
         },
       },
+      resolve: {
+        conditions: ['node', 'import'],
+      },
     },
   },
   plugins: [
+    suppressUseClientWarnings(),
+    tanstackStart(),
     devtools(),
     paraglideVitePlugin({
       project: './project.inlang',
@@ -102,7 +137,6 @@ const config = defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tailwindcss(),
-    tanstackStart(),
     nitro(),
     viteReact({
       babel: {
@@ -110,6 +144,9 @@ const config = defineConfig({
       },
     }),
   ],
+  optimizeDeps: {
+    exclude: ['@tanstack/react-start', '@tanstack/start-server-core', '@tanstack/start-client-core'],
+  },
 })
 
 export default config
